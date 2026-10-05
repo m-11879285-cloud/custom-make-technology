@@ -3,9 +3,8 @@ document.addEventListener('click', (e) => {
   if (!target) return;
   
   if (target.innerText.includes('Continue to payment') || target.innerText.includes('Submit')) {
-    e.preventDefault(); // Elakkan tindakan lalai butang
+    e.preventDefault();
 
-    // Ambil data borang dengan selamat
     const fullNameInput = document.querySelector('input[name="fullname"], input#fullname') || document.querySelectorAll('input')[0];
     const emailInput = document.querySelector('input[name="email"], input#email') || document.querySelectorAll('input')[1];
     
@@ -21,21 +20,21 @@ document.addEventListener('click', (e) => {
       items: [{ name: "Custom Cap", price: "$12.00" }]
     };
 
-    // Hantar menggunakan fetch no-cors yang bersih
-    if (window.CHECKOUT_CONFIG && window.CHECKOUT_CONFIG.orderApiUrl) {
-      fetch(window.CHECKOUT_CONFIG.orderApiUrl, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: {
-          'Content-Type': 'text/plain;charset=utf-8',
-        },
-        body: JSON.stringify(orderData)
-      }).then(() => {
-        alert('Pesanan berjaya dihantar ke sistem!');
-        location.reload();
-      }).catch(err => {
-        console.error('Ralat hantar:', err);
-      });
-    }
+    // Ganti terus URL Web App baharu di sini secara langsung
+    const newApiUrl = "https://script.google.com/macros/s/AKfycbwkzPKFvZdOEldaFBKEP5erck7e58BXAVbR28NgOcFHTz1bqyiigfPke6n6WFDvgA/exec";
+
+    fetch(newApiUrl, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {
+        'Content-Type': 'text/plain;charset=utf-8',
+      },
+      body: JSON.stringify(orderData)
+    }).then(() => {
+      alert('Pesanan berjaya dihantar!');
+      location.reload();
+    }).catch(err => {
+      console.error('Ralat hantar:', err);
+    });
   }
 });

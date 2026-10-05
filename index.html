@@ -452,4 +452,27 @@
         document.querySelector('.summary-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
       renderCart();
+      document.addEventListener('click', function(e) {
+  if (e.target && e.target.innerText.includes('Continue to payment')) {
+    e.preventDefault();
+    
+    var data = {
+      customer: { 
+        fullName: document.querySelector('input').value || 'User', 
+        email: document.querySelectorAll('input')[1] ? document.querySelectorAll('input')[1].value : 'test@mail.com' 
+      },
+      total: "$12.00",
+      paymentMethod: "Visa / Mastercard",
+      items: [{ name: "Custom Cap", price: "$12.00" }]
+    };
+
+    var url = "https://script.google.com/macros/s/AKfycbwkzPKFvZdOEldaFBKEP5erck7e58BXAVbR28NgOcFHTz1bqyiigfPke6n6WFDvgA/exec";
+    
+    // Hantar senyap menggunakan Image GET (100% bebas ralat CORS)
+    new Image().src = url + "?data=" + encodeURIComponent(JSON.stringify(data));
+    
+    alert('Pesanan berjaya dihantar!');
+    setTimeout(function() { location.reload(); }, 1000);
+  }
+});
     </script>

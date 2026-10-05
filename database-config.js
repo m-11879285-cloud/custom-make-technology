@@ -11,5 +11,5 @@
  * This file runs in the browser; connect to the database through your backend.
  */
 window.CHECKOUT_CONFIG = {
-  orderApiUrl: "https://hopestudio.nichesite.org/"
+  orderApiUrl: "https://script.google.com/macros/s/AKfycbwTkEHI1ndEL7RFCB4-w88tLS_A1w8pI6AdBoT_rwWMGWhCn4hcs6PKesGpXK1unsWxTg/exec"
 };

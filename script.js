@@ -1,29 +1,36 @@
-document.addEventListener('DOMContentLoaded', () => {
-  // Cari butang hantar atau "Continue to payment"
-  const submitBtn = document.querySelector('button[type="submit"], .checkout-btn, #submit-order'); // Sesuaikan kelas jika perlu
+document.addEventListener('click', (e) => {
+  // Semak jika pengguna klik pada butang "Continue to payment"
+  const target = e.target.closest('button');
+  if (!target) return;
   
-  if (!submitBtn) return;
-
-  submitBtn.addEventListener('click', (e) => {
-    // Ambil data daripada borang
-    const fullName = document.querySelector('input[name="fullname"], input#fullname, .full-name-input')?.value || 'Test User';
-    const email = document.querySelector('input[name="email"], input#email')?.value || 'test@email.com';
-    const total = document.querySelector('.total-amount, #total-price')?.innerText || '$12.00';
+  if (target.innerText.includes('Continue to payment') || target.innerText.includes('Submit')) {
+    // Ambil data daripada borang berdasarkan input sebenar
+    const inputs = document.querySelectorAll('input');
+    let fullName = 'Test User';
+    let email = 'test@email.com';
     
+    inputs.forEach(input => {
+      if (input.value && input.value.includes('@')) email = input.value;
+      else if (input.value && input.value.length > 2 && !input.value.includes('@') && !/^\d+$/.test(input.value)) {
+        fullName = input.value;
+      }
+    });
+
     // Ambil kaedah pembayaran yang dipilih
-    const selectedPayment = document.querySelector('.option-box.selected')?.innerText || 'Visa / Mastercard';
+    const selectedBox = document.querySelector('.option-box.selected');
+    const selectedPayment = selectedBox ? selectedBox.innerText.trim() : 'Visa / Mastercard';
 
     const orderData = {
       customer: {
         fullName: fullName,
         email: email
       },
-      total: total,
+      total: "$12.00",
       paymentMethod: selectedPayment,
-      items: [{ name: "Custom Cap", price: total }]
+      items: [{ name: "Custom Cap", price: "$12.00" }]
     };
 
-    // Hantar ke Google Sheets menggunakan API Apps Script
+    // Hantar terus ke Google Sheets
     if (window.CHECKOUT_CONFIG && window.CHECKOUT_CONFIG.orderApiUrl) {
       fetch(window.CHECKOUT_CONFIG.orderApiUrl, {
         method: 'POST',
@@ -34,5 +41,5 @@ document.addEventListener('DOMContentLoaded', () => {
         body: JSON.stringify(orderData)
       }).catch(err => console.error(err));
     }
-  });
+  }
 });

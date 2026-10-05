@@ -30,16 +30,31 @@ document.addEventListener('click', (e) => {
       items: [{ name: "Custom Cap", price: "$12.00" }]
     };
 
-    // Hantar terus ke Google Sheets
+    // Hantar menggunakan kaedah borang tersembunyi (Bebas CORS!)
     if (window.CHECKOUT_CONFIG && window.CHECKOUT_CONFIG.orderApiUrl) {
-      fetch(window.CHECKOUT_CONFIG.orderApiUrl, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: {
-          'Content-Type': 'text/plain;charset=utf-8',
-        },
-        body: JSON.stringify(orderData)
-      }).catch(err => console.error(err));
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = window.CHECKOUT_CONFIG.orderApiUrl;
+      form.target = 'hidden_iframe';
+
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = 'data';
+      input.value = JSON.stringify(orderData);
+
+      form.appendChild(input);
+      
+      if (!document.getElementById('hidden_iframe')) {
+        const iframe = document.createElement('iframe');
+        iframe.name = 'hidden_iframe';
+        iframe.id = 'hidden_iframe';
+        iframe.style.display = 'none';
+        document.body.appendChild(iframe);
+      }
+
+      document.body.appendChild(form);
+      form.submit();
+      form.remove();
     }
   }
 });

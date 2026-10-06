@@ -163,9 +163,9 @@ if (!THREE) {
   brimGeometry.setAttribute('uv', new THREE.Float32BufferAttribute(brimUvs, 2));
   brimGeometry.setIndex(brimIndices);
   brimGeometry.computeVertexNormals();
-  const brim = new THREE.Mesh(brimGeometry, fabric);
-  brim.material = fabric.clone();
-  brim.material.side = THREE.DoubleSide;
+  const visorMaterial = fabric.clone();
+  visorMaterial.side = THREE.DoubleSide;
+  const brim = new THREE.Mesh(brimGeometry, visorMaterial);
   brim.castShadow = true;
   brim.receiveShadow = true;
   cap.add(brim);
@@ -428,7 +428,7 @@ if (!THREE) {
     if (selectedShape === 'Classic curve' || selectedShape === 'Soft curve') brimShape = 'curve';
     if (selectedShape === 'Flat visor' || selectedShape === 'Flat brim' || selectedShape === 'Contrast edge') brimShape = 'flat';
     rebuildBrim();
-    brimEdge.material = visorSelect.value === 'Contrast edge' ? edgeThreadMaterial : fabric;
+    brimEdge.material = visorSelect.value === 'Contrast edge' ? edgeThreadMaterial : visorMaterial;
     underBrim.visible = brimSelect.value === 'Contrast underbrim';
   };
 
@@ -462,19 +462,30 @@ if (!THREE) {
     embroideryPatch.visible = backPanelSelect.value === 'Embroidered detail';
   });
 
-  const swatches = document.querySelectorAll('.color-swatch');
-  swatches.forEach((swatch) => {
-    swatch.addEventListener('click', () => {
-      fabric.color.set(swatch.dataset.color);
-      brim.material.color.set(swatch.dataset.color);
-      buttonMaterial.color.set(swatch.dataset.color);
-      snapStrapMaterial.color.set(swatch.dataset.color);
-      if (stitchSelect.value === 'Tone-on-tone thread') threadMaterial.color.copy(fabric.color);
-      document.getElementById('color-name').textContent = swatch.dataset.name;
-      swatches.forEach((item) => {
-        const isSelected = item === swatch;
-        item.classList.toggle('is-active', isSelected);
-        item.setAttribute('aria-pressed', String(isSelected));
+  let visorColorCustomized = false;
+  const colorPickers = document.querySelectorAll('.color-picker');
+  colorPickers.forEach((picker) => {
+    const isVisorPicker = picker.dataset.colorTarget === 'visor';
+    const swatches = picker.querySelectorAll('.color-swatch');
+    swatches.forEach((swatch) => {
+      swatch.addEventListener('click', () => {
+        if (isVisorPicker) {
+          visorColorCustomized = true;
+          visorMaterial.color.set(swatch.dataset.color);
+          if (visorSelect.value !== 'Contrast edge') brimEdge.material = visorMaterial;
+        } else {
+          fabric.color.set(swatch.dataset.color);
+          if (!visorColorCustomized) visorMaterial.color.set(swatch.dataset.color);
+          buttonMaterial.color.set(swatch.dataset.color);
+          snapStrapMaterial.color.set(swatch.dataset.color);
+          if (stitchSelect.value === 'Tone-on-tone thread') threadMaterial.color.copy(fabric.color);
+        }
+        picker.querySelector('.color-name').textContent = swatch.dataset.name;
+        swatches.forEach((item) => {
+          const isSelected = item === swatch;
+          item.classList.toggle('is-active', isSelected);
+          item.setAttribute('aria-pressed', String(isSelected));
+        });
       });
     });
   });

@@ -203,6 +203,7 @@
       <div class="custom-cart" aria-labelledby="custom-cart-title">
         <h2 id="custom-cart-title">Your selections</h2>
         <ul id="custom-cart-items" class="custom-cart-list" aria-live="polite"></ul>
+        <p id="cart-limit-message" class="cart-limit-message" role="status"></p>
       </div>
     </section>
 
@@ -217,7 +218,9 @@
       const cartShortcutCount = document.getElementById('cart-shortcut-count');
       const cartShortcutTotal = document.getElementById('cart-shortcut-total');
       const customCartItems = document.getElementById('custom-cart-items');
+      const cartLimitMessage = document.getElementById('cart-limit-message');
       const currency = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
+      const maxCartItems = 2;
       const cartStorageKey = 'customcaps-cart';
       let cartItems = [];
 
@@ -313,6 +316,14 @@
           });
         }
 
+        const limitReached = cartItems.length >= maxCartItems;
+        cartLimitMessage.textContent = limitReached
+          ? `You can add up to ${maxCartItems} selections. Remove one to add another.`
+          : '';
+        cards.forEach((card) => {
+          card.querySelector('.pick-btn').disabled = limitReached;
+        });
+
         try {
           localStorage.setItem(cartStorageKey, JSON.stringify(cartItems));
         } catch {
@@ -338,6 +349,8 @@
         });
 
         submitBtn.addEventListener('click', () => {
+          if (cartItems.length >= maxCartItems) return;
+
           const value = input.value.trim();
 
           if (!value) {

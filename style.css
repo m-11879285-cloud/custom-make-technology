@@ -693,6 +693,11 @@ img {
   white-space: nowrap;
 }
 
+.pick-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
 .summary-section {
   padding: 0 0 60px;
   scroll-margin-top: 24px;
@@ -792,6 +797,13 @@ img {
   margin: 0;
   padding: 0;
   list-style: none;
+}
+
+.cart-limit-message {
+  min-height: 1.4em;
+  margin: 8px 0 0;
+  color: #b9cee8;
+  font-size: 0.9rem;
 }
 
 .custom-cart-row {

@@ -37,6 +37,7 @@ if (!THREE) {
   const cap = new THREE.Group();
   scene.add(cap);
   const crownAssembly = new THREE.Group();
+  crownAssembly.scale.set(0.9, 1, 1.2);
   cap.add(crownAssembly);
   const weaveCanvas = document.createElement('canvas');
   weaveCanvas.width = 256;
@@ -121,6 +122,8 @@ if (!THREE) {
   crownAssembly.add(crown);
 
   let brimShape = 'curve';
+  const brimWidth = 1.02;
+  const brimFront = 1.58;
   const brimEdgeFactor = (across) => Math.pow(Math.max(0, 1 - Math.pow(Math.abs(across), 4)), 1 / 4);
   const brimHeight = (across, depth, shape = brimShape) => {
     const sideCurve = across * across;
@@ -139,9 +142,9 @@ if (!THREE) {
     for (let column = 0; column <= brimColumns; column += 1) {
       const across = (column / brimColumns) * 2 - 1;
       const edge = brimEdgeFactor(across);
-      const x = across * 1.16;
+      const x = across * brimWidth;
       const back = 0.14 * edge;
-      const front = 1.82 * edge;
+      const front = brimFront * edge;
       const z = back + (front - back) * depth;
       const y = brimHeight(across, depth);
       brimVertices.push(x, y, z);
@@ -300,9 +303,9 @@ if (!THREE) {
       const across = (point / 64) * 2 - 1;
       const edge = brimEdgeFactor(across);
       stitchPoints.push(new THREE.Vector3(
-        across * 1.16,
+        across * brimWidth,
         brimHeight(across, depth) + 0.008,
-        (0.14 + (1.82 - 0.14) * depth) * edge
+        (0.14 + (brimFront - 0.14) * depth) * edge
       ));
     }
     return new THREE.TubeGeometry(new THREE.CatmullRomCurve3(stitchPoints), 96, 0.005, 5, false);
@@ -342,11 +345,42 @@ if (!THREE) {
   groundShadow.scale.set(1, 0.5, 1);
   scene.add(groundShadow);
 
+  const logoColumns = 24;
+  const logoRows = 16;
+  const logoVertices = [];
+  const logoUvs = [];
+  const logoIndices = [];
+  for (let row = 0; row <= logoRows; row += 1) {
+    const y = 0.47 + (row / logoRows) * 0.36;
+    let profileIndex = smoothProfile.findIndex(([height]) => height >= y);
+    profileIndex = Math.max(1, profileIndex);
+    const lowerProfile = smoothProfile[profileIndex - 1];
+    const upperProfile = smoothProfile[profileIndex];
+    const progress = (y - lowerProfile[0]) / (upperProfile[0] - lowerProfile[0]);
+    const radiusX = lowerProfile[1] + (upperProfile[1] - lowerProfile[1]) * progress;
+    const radiusZ = lowerProfile[2] + (upperProfile[2] - lowerProfile[2]) * progress;
+    for (let column = 0; column <= logoColumns; column += 1) {
+      const u = column / logoColumns;
+      const x = (u * 2 - 1) * 0.32;
+      const z = radiusZ * Math.sqrt(1 - (x / radiusX) ** 2) + 0.012;
+      logoVertices.push(x, y, z);
+      logoUvs.push(u, row / logoRows);
+      if (row < logoRows && column < logoColumns) {
+        const current = row * (logoColumns + 1) + column;
+        const nextRow = current + logoColumns + 1;
+        logoIndices.push(current, current + 1, nextRow, current + 1, nextRow + 1, nextRow);
+      }
+    }
+  }
+  const logoGeometry = new THREE.BufferGeometry();
+  logoGeometry.setAttribute('position', new THREE.Float32BufferAttribute(logoVertices, 3));
+  logoGeometry.setAttribute('uv', new THREE.Float32BufferAttribute(logoUvs, 2));
+  logoGeometry.setIndex(logoIndices);
+  logoGeometry.computeVertexNormals();
   const logo = new THREE.Mesh(
-    new THREE.PlaneGeometry(0.52, 0.36),
-    new THREE.MeshBasicMaterial({ transparent: true, side: THREE.DoubleSide, depthWrite: false })
+    logoGeometry,
+    new THREE.MeshStandardMaterial({ transparent: true, roughness: 0.9, side: THREE.FrontSide })
   );
-  logo.position.set(0, 0.63, 0.76);
   logo.visible = false;
   crownAssembly.add(logo);
 

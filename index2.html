@@ -1,0 +1,401 @@
+<html>
+      <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Customization Cap</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+    <body class="customizer-page">
+    <header class="site-header">
+      <nav class="navbar container">
+        <div class="brand">
+          <span class="brand-mark">CC</span>
+          <span>CustomCaps</span>
+        </div>
+
+        <ul class="nav-links">
+          <li><a href="https://harukisensei.infy.click/login.php">Home</a></li>
+          <li><a href="#">Services</a></li>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+
+        <div class="nav-actions">
+          <a href="#" class="login-link">Login</a>
+          <a href="#" class="btn btn-primary">Register</a>
+        </div>
+      </nav>
+    </header>
+
+    <section class="product-section container">
+      <header class="customizer-heading">
+        <div class="cap-stage" id="cap-stage" aria-label="Interactive 3D cap preview">
+          <canvas id="cap-viewer" aria-label="3D cap. Drag to rotate and scroll to zoom."></canvas>
+          <span class="stage-label">3D PREVIEW <span aria-hidden="true">·</span> DRAG TO ROTATE</span>
+          <span class="stage-index">01 / 01</span>
+        </div>
+
+        <div class="cap-controls">
+          <p class="control-kicker">YOUR FIRST DESIGN</p>
+          <h1>Make it yours.</h1>
+          <p class="control-description">Shape a classic cap, one detail at a time.</p>
+
+          <fieldset class="color-picker" data-color-target="cap">
+            <legend>Cap color <span class="color-name">White</span></legend>
+            <button class="color-swatch is-active" type="button" style="--swatch: #ffffff" data-color="#ffffff" data-name="White" aria-label="White cap" aria-pressed="true"></button>
+            <button class="color-swatch" type="button" style="--swatch: #9a9da0" data-color="#9a9da0" data-name="Heather grey" aria-label="Heather grey cap" aria-pressed="false"></button>
+            <button class="color-swatch" type="button" style="--swatch: #193957" data-color="#193957" data-name="Deep navy" aria-label="Deep navy cap" aria-pressed="false"></button>
+            <button class="color-swatch" type="button" style="--swatch: #d7e1d5" data-color="#d7e1d5" data-name="Sage" aria-label="Sage cap" aria-pressed="false"></button>
+            <button class="color-swatch" type="button" style="--swatch: #c85c3d" data-color="#c85c3d" data-name="Clay" aria-label="Clay cap" aria-pressed="false"></button>
+            <button class="color-swatch" type="button" style="--swatch: #242a2d" data-color="#242a2d" data-name="Graphite" aria-label="Graphite cap" aria-pressed="false"></button>
+          </fieldset>
+
+          <fieldset class="color-picker" data-color-target="visor">
+            <legend>Visor color <span class="color-name">White</span></legend>
+            <button class="color-swatch is-active" type="button" style="--swatch: #ffffff" data-color="#ffffff" data-name="White" aria-label="White visor" aria-pressed="true"></button>
+            <button class="color-swatch" type="button" style="--swatch: #9a9da0" data-color="#9a9da0" data-name="Heather grey" aria-label="Heather grey visor" aria-pressed="false"></button>
+            <button class="color-swatch" type="button" style="--swatch: #193957" data-color="#193957" data-name="Deep navy" aria-label="Deep navy visor" aria-pressed="false"></button>
+            <button class="color-swatch" type="button" style="--swatch: #d7e1d5" data-color="#d7e1d5" data-name="Sage" aria-label="Sage visor" aria-pressed="false"></button>
+            <button class="color-swatch" type="button" style="--swatch: #c85c3d" data-color="#c85c3d" data-name="Clay" aria-label="Clay visor" aria-pressed="false"></button>
+            <button class="color-swatch" type="button" style="--swatch: #242a2d" data-color="#242a2d" data-name="Graphite" aria-label="Graphite visor" aria-pressed="false"></button>
+          </fieldset>
+
+          <div class="logo-control">
+            <label for="picture-upload">Front-panel artwork</label>
+          <input id="picture-upload" class="picture-upload" type="file" accept="image/*" />
+            <label class="upload-button" for="picture-upload">＋ <span id="upload-label">Add an image</span></label>
+            <button id="remove-picture" class="remove-picture" type="button" disabled>Remove image</button>
+          </div>
+
+          <div class="view-controls" aria-label="Cap view controls">
+            <button type="button" data-view="front" aria-label="Front view" title="Front view">Front</button>
+            <button type="button" data-view="side" aria-label="Side view" title="Side view">Side</button>
+            <button type="button" data-view="reset" aria-label="Reset view" title="Reset view">Reset</button>
+          </div>
+
+          <label class="spin-control"><input id="auto-rotate" type="checkbox" checked /> Slow turn</label>
+        </div>
+      </header>
+    
+      <div class="product-grid">
+
+        <div class="interactive-card selected" tabindex="0" role="button" aria-label="Select Dream Design cap">
+          <img src="https://cdn.shopify.com/s/files/1/0830/5328/1589/files/tour-visor-blueprint.jpg?v=1716037649" />
+          <div class="card-content">
+            <div class="card-topline">
+              <span class="badge">Visor Design</span>
+              <span class="price">$12</span>
+            </div>
+            <h3>Customize The Visor</h3>
+            <p>Choose your design, colors, and embroidery style.</p>
+            <div class="customize-row">
+              <select class="custom-text" aria-label="Choose a visor design">
+                <option value="" disabled selected>Choose a visor design</option>
+                <option value="Classic curve">Classic curve</option>
+                <option value="Flat visor">Flat visor</option>
+                <option value="Contrast edge">Contrast edge</option>
+              </select>
+              <button type="button" class="pick-btn">Submit</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="interactive-card" tabindex="0" role="button" aria-label="Select Street Style cap">
+          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwN8RVINpgaq04zWN7Fo7OkTaOtIgx_osB3dUhC-jWqw&s=10" alt="Stre" />
+          <div class="card-content">
+            <div class="card-topline">
+              <span class="badge">Stitching Style</span>
+              <span class="price">$1</span>
+            </div>
+            <h3>The Stitching Look</h3>
+            <p>Modern look with bold creative details.</p>
+            <div class="customize-row">
+              <select class="custom-text" aria-label="Choose a stitching style">
+                <option value="" disabled selected>Choose stitching</option>
+                <option value="Tone-on-tone thread">Tone-on-tone thread</option>
+                <option value="Contrast thread">Contrast thread</option>
+                <option value="Double-row stitching">Double-row stitching</option>
+              </select>
+              <button type="button" class="pick-btn">Submit</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="interactive-card" tabindex="0" role="button" aria-label="Select Minimal cap">
+          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRIH-YifPvPH-M0KLM8M_P6v7ZxvT0Wm4gJBJIX0vKMHw&s=10" alt="Minimal cap" />
+          <div class="card-content">
+            <div class="card-topline">
+              <span class="badge">Brim</span>
+              <span class="price">$3</span>
+            </div>
+            <h3>Customize the Brim</h3>
+            <p>Clean and simple design for everyday wear.</p>
+            <div class="customize-row">
+              <select class="custom-text" aria-label="Choose a brim style">
+                <option value="" disabled selected>Choose a brim style</option>
+                <option value="Flat brim">Flat brim</option>
+                <option value="Soft curve">Soft curve</option>
+                <option value="Contrast underbrim">Contrast underbrim</option>
+              </select>
+              <button type="button" class="pick-btn">Submit</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="interactive-card" tabindex="0" role="button" aria-label="Select Classic cap">
+          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRN8dm9ZzzwNTC2Gzn8Sau7y9UsN2A-xfBOk9lRZi1UQg&s=10" alt="Classic cap" />
+          <div class="card-content">
+            <div class="card-topline">
+              <span class="badge">Sweatband</span>
+              <span class="price">$4</span>
+            </div>
+            <h3>Customize the sweatband materials</h3>
+            <p>Comfort-first style built for active use.</p>
+            <div class="customize-row">
+              <select class="custom-text" aria-label="Choose a sweatband material">
+                <option value="" disabled selected>Choose a material</option>
+                <option value="Cotton twill">Cotton twill</option>
+                <option value="Moisture-wicking mesh">Moisture-wicking mesh</option>
+                <option value="Padded comfort band">Padded comfort band</option>
+              </select>
+              <button type="button" class="pick-btn">Submit</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="interactive-card" tabindex="0" role="button" aria-label="Select Sport cap">
+          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrkIJ5qvMKHncG3WinQ0X7_GzILK_JUkHiXcH4yC5z9Q&s=10" alt="Sport cap" />
+          <div class="card-content">
+            <div class="card-topline">
+              <span class="badge">Crwon</span>
+              <span class="price">$3</span>
+            </div>
+            <h3>Crown</h3>
+            <p>Change the Crown on your cap to fit your style.</p>
+            <div class="customize-row">
+              <select class="custom-text" aria-label="Choose a crown profile">
+                <option value="" disabled selected>Choose a crown profile</option>
+                <option value="High crown">High crown</option>
+                <option value="Mid crown">Mid crown</option>
+                <option value="Relaxed crown">Relaxed crown</option>
+              </select>
+              <button type="button" class="pick-btn">Submit</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="interactive-card" tabindex="0" role="button" aria-label="Select Limited Edition cap">
+          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXTMBcB_Cb6of_ckFCRdZr_5JhHiwQH7h16q4D3oLKiQ&s=10" alt="Limited Edition cap" />
+          <div class="card-content">
+            <div class="card-topline">
+              <span class="badge">Back Panel</span>
+              <span class="price">$5</span>
+            </div>
+            <h3>Back Panel</h3>
+            <p>Exclusive design with a standout look.</p>
+            <div class="customize-row">
+              <select class="custom-text" aria-label="Choose a back panel option">
+                <option value="" disabled selected>Choose a back panel option</option>
+                <option value="Ventilated mesh">Ventilated mesh</option>
+                <option value="Embroidered detail">Embroidered detail</option>
+                <option value="Plain panel">Plain panel</option>
+              </select>
+              <button type="button" class="pick-btn">Submit</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="custom-cart" aria-labelledby="custom-cart-title">
+        <h2 id="custom-cart-title">Your selections</h2>
+        <ul id="custom-cart-items" class="custom-cart-list" aria-live="polite"></ul>
+        <p id="cart-status-message" class="cart-status-message" role="status"></p>
+      </div>
+    </section>
+
+    <button id="cart-shortcut" class="cart-shortcut" type="button" aria-label="Go to checkout, 0 items, total $0.00">
+      <span>Checkout</span>
+      <strong id="cart-shortcut-count">0</strong>
+      <span id="cart-shortcut-total">$0.00</span>
+    </button>
+    <script>
+      const cards = document.querySelectorAll('.interactive-card');
+      const cartShortcut = document.getElementById('cart-shortcut');
+      const cartShortcutCount = document.getElementById('cart-shortcut-count');
+      const cartShortcutTotal = document.getElementById('cart-shortcut-total');
+      const customCartItems = document.getElementById('custom-cart-items');
+      const cartStatusMessage = document.getElementById('cart-status-message');
+      const currency = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
+      const cartStorageKey = 'customcaps-cart';
+      let cartItems = [];
+
+      try {
+        const savedItems = JSON.parse(localStorage.getItem(cartStorageKey) || '[]');
+        if (Array.isArray(savedItems)) {
+          const uniqueItems = new Map();
+          savedItems.forEach((item) => uniqueItems.set(item.title, item));
+          cartItems = [...uniqueItems.values()];
+        }
+      } catch {
+        localStorage.removeItem(cartStorageKey);
+      }
+
+      const animateCapToCart = (submitButton) => {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          return;
+        }
+
+        const source = submitButton.getBoundingClientRect();
+        const destination = cartShortcut.getBoundingClientRect();
+        const startX = source.left + source.width / 2;
+        const startY = source.top + source.height / 2;
+        const deltaX = destination.left + destination.width / 2 - startX;
+        const deltaY = destination.top + destination.height / 2 - startY;
+        const cap = document.createElement('span');
+        cap.className = 'cart-flight-cap';
+        cap.setAttribute('aria-hidden', 'true');
+        cap.textContent = '🧢';
+        cap.style.left = `${startX}px`;
+        cap.style.top = `${startY}px`;
+        document.body.appendChild(cap);
+
+        const frame = (progress, lift, rotation, scale, opacity) => ({
+          opacity,
+          transform: `translate(-50%, -50%) translate(${deltaX * progress}px, ${deltaY * progress - lift}px) rotate(${rotation}deg) scale(${scale})`
+        });
+
+        cap.animate([
+          frame(0, 0, -12, 1.15, 1),
+          frame(0.25, 95, 12, 1, 1),
+          frame(0.55, 135, 370, 0.82, 1),
+          frame(0.82, 60, 720, 0.6, 0.9),
+          frame(1, 0, 900, 0.25, 0)
+        ], {
+          duration: 850,
+          easing: 'cubic-bezier(0.2, 0.75, 0.25, 1)',
+          fill: 'forwards'
+        }).onfinish = () => {
+          cap.remove();
+          cartShortcut.classList.add('cart-arrived');
+          window.setTimeout(() => cartShortcut.classList.remove('cart-arrived'), 500);
+        };
+      };
+
+      const renderCart = () => {
+        const total = cartItems.reduce((sum, cartItem) => sum + cartItem.price, 0);
+        cartShortcutCount.textContent = String(cartItems.length);
+        cartShortcutTotal.textContent = currency.format(total);
+        cartShortcut.setAttribute('aria-label', `Go to checkout, ${cartItems.length} ${cartItems.length === 1 ? 'item' : 'items'}, total ${currency.format(total)}`);
+
+        customCartItems.replaceChildren();
+        if (cartItems.length === 0) {
+          const emptyRow = document.createElement('li');
+          emptyRow.className = 'custom-cart-empty';
+          emptyRow.textContent = 'Your cart is empty.';
+          customCartItems.append(emptyRow);
+        } else {
+          cartItems.forEach((cartItem, index) => {
+            const row = document.createElement('li');
+            row.className = 'custom-cart-row';
+
+            const details = document.createElement('span');
+            details.className = 'custom-cart-details';
+            const title = document.createElement('strong');
+            title.textContent = cartItem.title;
+            const customization = document.createElement('span');
+            customization.textContent = cartItem.customization;
+            details.append(title, customization);
+
+            const price = document.createElement('span');
+            price.className = 'custom-cart-price';
+            price.textContent = currency.format(cartItem.price);
+
+            const removeButton = document.createElement('button');
+            removeButton.className = 'remove-cart-item';
+            removeButton.type = 'button';
+            removeButton.textContent = 'Remove';
+            removeButton.setAttribute('aria-label', `Remove ${cartItem.title} from cart`);
+            removeButton.addEventListener('click', () => {
+              cartItems.splice(index, 1);
+              renderCart();
+            });
+
+            row.append(details, price, removeButton);
+            customCartItems.append(row);
+          });
+        }
+
+        cards.forEach((card) => {
+          const title = card.querySelector('h3').textContent;
+          const locked = cartItems.some((item) => item.title === title);
+          const input = card.querySelector('.custom-text');
+          const submitButton = card.querySelector('.pick-btn');
+          input.disabled = locked;
+          submitButton.disabled = locked;
+          input.title = locked ? 'Remove this selection to change the choice.' : '';
+          submitButton.title = locked ? 'Remove this selection before choosing another.' : '';
+        });
+
+        try {
+          localStorage.setItem(cartStorageKey, JSON.stringify(cartItems));
+        } catch {
+          console.error('Could not save the cart in this browser.');
+        }
+      };
+
+      cards.forEach((card) => {
+        const input = card.querySelector('.custom-text');
+        const submitBtn = card.querySelector('.pick-btn');
+
+        const toggleSelection = () => {
+          cards.forEach((item) => item.classList.remove('selected'));
+          card.classList.add('selected');
+        };
+
+        card.addEventListener('click', toggleSelection);
+        card.addEventListener('keydown', (event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            toggleSelection();
+          }
+        });
+
+        submitBtn.addEventListener('click', () => {
+          const value = input.value.trim();
+
+          if (!value) {
+            input.focus();
+            return;
+          }
+
+          const title = card.querySelector('h3').textContent;
+          if (cartItems.some((item) => item.title === title)) {
+            cartStatusMessage.textContent = `Remove ${title} before changing this choice.`;
+            return;
+          }
+
+          cartItems.push({
+            title,
+            customization: value,
+            price: Number(card.querySelector('.price').textContent.replace('$', ''))
+          });
+          cartStatusMessage.textContent = `${title} added. Remove it to change this choice.`;
+          renderCart();
+          animateCapToCart(submitBtn);
+        });
+      });
+
+      cartShortcut.addEventListener('click', () => {
+        const checkoutUrl = new URL('https://hopestudio.nichesite.org/');
+        checkoutUrl.searchParams.set('cart', JSON.stringify(cartItems));
+        window.location.assign(checkoutUrl.toString());
+      });
+      renderCart();
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.159.0/build/three.min.js"></script>
+    <script src="cap-viewer.js"></script>

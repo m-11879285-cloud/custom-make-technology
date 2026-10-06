@@ -3,10 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="refresh" content="0; url=index2.html" />
     <title>CustomCaps</title>
     <script>
-      window.location.replace('index2.html');
+      const customizerUrl = new URL('index2.html', window.location.href);
+      customizerUrl.hash = window.location.hash;
+      window.location.replace(customizerUrl);
     </script>
   </head>
   <body>

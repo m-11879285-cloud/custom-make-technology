@@ -197,6 +197,11 @@
           </div>
         </div>
       </div>
+
+      <div class="custom-cart" aria-labelledby="custom-cart-title">
+        <h2 id="custom-cart-title">Your selections</h2>
+        <ul id="custom-cart-items" class="custom-cart-list" aria-live="polite"></ul>
+      </div>
     </section>
 
     <button id="cart-shortcut" class="cart-shortcut" type="button" aria-label="Go to checkout, 0 items, total $0.00">
@@ -209,6 +214,7 @@
       const cartShortcut = document.getElementById('cart-shortcut');
       const cartShortcutCount = document.getElementById('cart-shortcut-count');
       const cartShortcutTotal = document.getElementById('cart-shortcut-total');
+      const customCartItems = document.getElementById('custom-cart-items');
       const currency = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
       const cartStorageKey = 'customcaps-cart';
       let cartItems = [];
@@ -266,6 +272,45 @@
         cartShortcutCount.textContent = String(cartItems.length);
         cartShortcutTotal.textContent = currency.format(total);
         cartShortcut.setAttribute('aria-label', `Go to checkout, ${cartItems.length} ${cartItems.length === 1 ? 'item' : 'items'}, total ${currency.format(total)}`);
+
+        customCartItems.replaceChildren();
+        if (cartItems.length === 0) {
+          const emptyRow = document.createElement('li');
+          emptyRow.className = 'custom-cart-empty';
+          emptyRow.textContent = 'Your cart is empty.';
+          customCartItems.append(emptyRow);
+        } else {
+          cartItems.forEach((cartItem, index) => {
+            const row = document.createElement('li');
+            row.className = 'custom-cart-row';
+
+            const details = document.createElement('span');
+            details.className = 'custom-cart-details';
+            const title = document.createElement('strong');
+            title.textContent = cartItem.title;
+            const customization = document.createElement('span');
+            customization.textContent = cartItem.customization;
+            details.append(title, customization);
+
+            const price = document.createElement('span');
+            price.className = 'custom-cart-price';
+            price.textContent = currency.format(cartItem.price);
+
+            const removeButton = document.createElement('button');
+            removeButton.className = 'remove-cart-item';
+            removeButton.type = 'button';
+            removeButton.textContent = 'Remove';
+            removeButton.setAttribute('aria-label', `Remove ${cartItem.title} from cart`);
+            removeButton.addEventListener('click', () => {
+              cartItems.splice(index, 1);
+              renderCart();
+            });
+
+            row.append(details, price, removeButton);
+            customCartItems.append(row);
+          });
+        }
+
         try {
           localStorage.setItem(cartStorageKey, JSON.stringify(cartItems));
         } catch {

@@ -309,7 +309,9 @@
       });
 
       cartShortcut.addEventListener('click', () => {
-        window.location.assign('https://hopestudio.nichesite.org/');
+        const checkoutUrl = new URL('https://hopestudio.nichesite.org/');
+        checkoutUrl.searchParams.set('cart', JSON.stringify(cartItems));
+        window.location.assign(checkoutUrl.toString());
       });
       renderCart();
     </script>

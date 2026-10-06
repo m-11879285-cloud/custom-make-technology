@@ -321,10 +321,14 @@ img {
   min-height: 410px;
   overflow: hidden;
   border-radius: 4px;
-  background-color: #d7e4dc;
-  background-image: linear-gradient(rgba(16, 30, 26, 0.08), rgba(16, 30, 26, 0.14)), url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR8ilnzYZ31jk1IKHclYsOvSW4ty3tWr-hKrsubHHmrxg&s=10");
+  background-color: #eaf4f8;
+  background-image:
+    linear-gradient(rgba(39, 104, 137, 0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(39, 104, 137, 0.12) 1px, transparent 1px),
+    linear-gradient(rgba(39, 104, 137, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(39, 104, 137, 0.045) 1px, transparent 1px);
+  background-size: 96px 96px, 96px 96px, 16px 16px, 16px 16px;
   background-position: center;
-  background-size: cover;
   touch-action: none;
   cursor: grab;
 }

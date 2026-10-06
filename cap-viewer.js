@@ -23,7 +23,7 @@ if (!THREE) {
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 100);
-  camera.position.set(0, 2, 4.8);
+  camera.position.set(1.25, 2.05, 4.9);
   camera.lookAt(0, 0.55, 0.35);
 
   scene.add(new THREE.HemisphereLight(0xf4f4e9, 0x64766f, 2.1));
@@ -39,18 +39,19 @@ if (!THREE) {
   const crownAssembly = new THREE.Group();
   cap.add(crownAssembly);
   const weaveCanvas = document.createElement('canvas');
-  weaveCanvas.width = 128;
-  weaveCanvas.height = 128;
+  weaveCanvas.width = 256;
+  weaveCanvas.height = 256;
   const weaveContext = weaveCanvas.getContext('2d');
-  weaveContext.fillStyle = '#d7d9d2';
-  weaveContext.fillRect(0, 0, 128, 128);
-  for (let thread = 0; thread < 128; thread += 4) {
-    weaveContext.fillStyle = 'rgba(255,255,255,0.22)';
-    weaveContext.fillRect(thread, 0, 1, 128);
-    weaveContext.fillRect(0, thread, 128, 1);
-    weaveContext.fillStyle = 'rgba(25,35,33,0.13)';
-    weaveContext.fillRect(thread + 2, 0, 1, 128);
-    weaveContext.fillRect(0, thread + 2, 128, 1);
+  weaveContext.fillStyle = '#f8f8f7';
+  weaveContext.fillRect(0, 0, 256, 256);
+  for (let row = 0; row < 256; row += 4) {
+    const offset = (row / 4) % 8;
+    for (let column = 0; column < 256; column += 8) {
+      weaveContext.fillStyle = ((row / 4 + column / 8) % 2 === 0)
+        ? 'rgba(255,255,255,0.08)'
+        : 'rgba(25,35,33,0.045)';
+      weaveContext.fillRect((column + offset) % 256, row, 3, 4);
+    }
   }
   const weaveTexture = new THREE.CanvasTexture(weaveCanvas);
   weaveTexture.wrapS = THREE.RepeatWrapping;
@@ -58,22 +59,24 @@ if (!THREE) {
   weaveTexture.repeat.set(8, 5);
   weaveTexture.colorSpace = THREE.SRGBColorSpace;
   const fabric = new THREE.MeshStandardMaterial({
-    color: '#193957',
+    color: '#ffffff',
     map: weaveTexture,
+    bumpMap: weaveTexture,
+    bumpScale: 0.006,
     roughness: 0.86,
     metalness: 0
   });
 
   const profile = [
     [0.1, 1.02, 0.78],
-    [0.2, 1.06, 0.82],
-    [0.38, 1.04, 0.81],
-    [0.58, 1, 0.78],
-    [0.78, 0.87, 0.68],
-    [0.96, 0.68, 0.54],
-    [1.08, 0.4, 0.34],
-    [1.12, 0.08, 0.08],
-    [1.12, 0.015, 0.015]
+    [0.18, 1.06, 0.82],
+    [0.48, 1.055, 0.815],
+    [0.72, 1.015, 0.79],
+    [0.9, 0.88, 0.7],
+    [1.05, 0.62, 0.5],
+    [1.16, 0.3, 0.24],
+    [1.2, 0.12, 0.1],
+    [1.2, 0.015, 0.015]
   ];
 
   const smoothProfile = [];
@@ -88,11 +91,13 @@ if (!THREE) {
   const crownVertices = [];
   const crownUvs = [];
   const crownIndices = [];
-  const radialSegments = 64;
+  const radialSegments = 96;
   smoothProfile.forEach(([height, radiusX, radiusZ], ring) => {
     for (let segment = 0; segment <= radialSegments; segment += 1) {
       const angle = (segment / radialSegments) * Math.PI * 2;
-      crownVertices.push(radiusX * Math.cos(angle), height, radiusZ * Math.sin(angle));
+      const seamRelief = Math.pow(Math.max(0, Math.cos((angle - Math.PI / 2) * 3)), 6);
+      const panelScale = 1 - seamRelief * 0.016;
+      crownVertices.push(radiusX * panelScale * Math.cos(angle), height, radiusZ * panelScale * Math.sin(angle));
       crownUvs.push(segment / radialSegments, ring / (smoothProfile.length - 1));
       if (ring < smoothProfile.length - 1 && segment < radialSegments) {
         const current = ring * (radialSegments + 1) + segment;
@@ -118,10 +123,10 @@ if (!THREE) {
   let brimShape = 'curve';
   const brimEdgeFactor = (across) => Math.pow(Math.max(0, 1 - Math.pow(Math.abs(across), 4)), 1 / 4);
   const brimHeight = (across, depth, shape = brimShape) => {
-    const base = 0.12 + 0.06 * across * across;
+    const base = 0.12 + 0.04 * across * across;
     return shape === 'curve'
-      ? base - 0.12 * depth * depth + 0.14 * Math.abs(across) * depth
-      : base - 0.012 * depth * depth;
+      ? base - 0.16 * depth * depth + 0.12 * Math.abs(across) * depth
+      : base - 0.004 * depth * depth;
   };
   const brimVertices = [];
   const brimUvs = [];
@@ -133,9 +138,9 @@ if (!THREE) {
     for (let column = 0; column <= brimColumns; column += 1) {
       const across = (column / brimColumns) * 2 - 1;
       const edge = brimEdgeFactor(across);
-      const x = across * 1.28;
+      const x = across * 1.16;
       const back = 0.14 * edge;
-      const front = 1.92 * edge;
+      const front = 1.82 * edge;
       const z = back + (front - back) * depth;
       const y = brimHeight(across, depth);
       brimVertices.push(x, y, z);
@@ -168,24 +173,33 @@ if (!THREE) {
   underBrim.visible = false;
   cap.add(underBrim);
 
-  const seamMaterial = new THREE.LineBasicMaterial({ color: 0xb4c5b6, transparent: true, opacity: 0.56 });
-  const threadMaterial = new THREE.MeshStandardMaterial({ color: '#bdcbbd', roughness: 0.85 });
+  const threadMaterial = new THREE.MeshStandardMaterial({ color: '#aab6bb', roughness: 0.9 });
   for (let panel = 0; panel < 6; panel += 1) {
-    const angle = (panel / 6) * Math.PI * 2;
+    const angle = Math.PI / 2 + (panel / 6) * Math.PI * 2;
     if (Math.sin(angle) < -0.72) continue;
     const seamPoints = smoothProfile.map(([height, radiusX, radiusZ]) => new THREE.Vector3(
-      (radiusX + 0.004) * Math.cos(angle),
+      (radiusX * (1 - 0.016) + 0.009) * Math.cos(angle),
       height + 0.003,
-      (radiusZ + 0.004) * Math.sin(angle)
+      (radiusZ * (1 - 0.016) + 0.009) * Math.sin(angle)
     ));
-    crownAssembly.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(seamPoints), seamMaterial));
+    crownAssembly.add(new THREE.Mesh(
+      new THREE.TubeGeometry(new THREE.CatmullRomCurve3(seamPoints), 96, 0.007, 6, false),
+      threadMaterial
+    ));
   }
 
-  const button = new THREE.Mesh(
-    new THREE.SphereGeometry(0.075, 20, 12),
-    new THREE.MeshStandardMaterial({ color: '#b6c7b5', roughness: 0.7 })
-  );
-  button.position.y = 1.15;
+  const crownBasePoints = Array.from({ length: 97 }, (_, segment) => {
+    const angle = (segment / 96) * Math.PI * 2;
+    return new THREE.Vector3(1.045 * Math.cos(angle), 0.16, 0.805 * Math.sin(angle));
+  });
+  crownAssembly.add(new THREE.Mesh(
+    new THREE.TubeGeometry(new THREE.CatmullRomCurve3(crownBasePoints, true), 96, 0.008, 6, false),
+    threadMaterial
+  ));
+
+  const buttonMaterial = new THREE.MeshStandardMaterial({ color: '#f1f2f2', roughness: 0.78 });
+  const button = new THREE.Mesh(new THREE.SphereGeometry(0.075, 20, 12), buttonMaterial);
+  button.position.y = 1.25;
   crownAssembly.add(button);
 
   const sweatbandMaterial = new THREE.MeshStandardMaterial({ color: '#101b22', roughness: 0.96 });
@@ -214,14 +228,12 @@ if (!THREE) {
   snapGeometry.setAttribute('position', new THREE.Float32BufferAttribute(snapVertices, 3));
   snapGeometry.setIndex(snapIndices);
   snapGeometry.computeVertexNormals();
-  const snapStrap = new THREE.Mesh(snapGeometry, new THREE.MeshStandardMaterial({
-    color: '#242a2d',
-    roughness: 0.72,
-    side: THREE.DoubleSide
-  }));
+  const snapStrapMaterial = fabric.clone();
+  snapStrapMaterial.side = THREE.DoubleSide;
+  const snapStrap = new THREE.Mesh(snapGeometry, snapStrapMaterial);
   crownAssembly.add(snapStrap);
 
-  const snapHoleMaterial = new THREE.MeshBasicMaterial({ color: '#101b22', side: THREE.DoubleSide });
+  const snapHoleMaterial = new THREE.MeshBasicMaterial({ color: '#929698', side: THREE.DoubleSide });
   for (let hole = 0; hole < 5; hole += 1) {
     const x = (hole - 2) * 0.18;
     const z = -0.82 * Math.sqrt(Math.max(0, 1 - (x / 1.06) ** 2)) - 0.029;
@@ -231,7 +243,7 @@ if (!THREE) {
     crownAssembly.add(snapHole);
   }
 
-  const eyeletRingMaterial = new THREE.MeshStandardMaterial({ color: '#bac7ba', metalness: 0.52, roughness: 0.38 });
+  const eyeletRingMaterial = new THREE.MeshStandardMaterial({ color: '#e1e2e2', metalness: 0.12, roughness: 0.72 });
   const eyeletInsetMaterial = new THREE.MeshBasicMaterial({ color: '#142b3a' });
   for (let vent = 0; vent < 6; vent += 1) {
     const angle = (vent / 6) * Math.PI * 2;
@@ -287,16 +299,17 @@ if (!THREE) {
       const across = (point / 64) * 2 - 1;
       const edge = brimEdgeFactor(across);
       stitchPoints.push(new THREE.Vector3(
-        across * 1.28,
+        across * 1.16,
         brimHeight(across, depth) + 0.008,
-        (0.14 + (1.92 - 0.14) * depth) * edge
+        (0.14 + (1.82 - 0.14) * depth) * edge
       ));
     }
-    return new THREE.TubeGeometry(new THREE.CatmullRomCurve3(stitchPoints), 96, 0.009, 5, false);
+    return new THREE.TubeGeometry(new THREE.CatmullRomCurve3(stitchPoints), 96, 0.005, 5, false);
   };
-  const stitches = new THREE.Mesh(makeStitchGeometry(0.76), threadMaterial);
-  cap.add(stitches);
-  const secondStitches = new THREE.Mesh(makeStitchGeometry(0.68), threadMaterial);
+  const stitchDepths = [0.5, 0.58, 0.66, 0.74, 0.82];
+  const stitches = stitchDepths.map((depth) => new THREE.Mesh(makeStitchGeometry(depth), threadMaterial));
+  stitches.forEach((stitch) => cap.add(stitch));
+  const secondStitches = new THREE.Mesh(makeStitchGeometry(0.9), threadMaterial);
   secondStitches.visible = false;
   cap.add(secondStitches);
 
@@ -364,10 +377,12 @@ if (!THREE) {
     }
     position.needsUpdate = true;
     brimGeometry.computeVertexNormals();
-    stitches.geometry.dispose();
-    stitches.geometry = makeStitchGeometry(0.76);
+    stitches.forEach((stitch, index) => {
+      stitch.geometry.dispose();
+      stitch.geometry = makeStitchGeometry(stitchDepths[index]);
+    });
     secondStitches.geometry.dispose();
-    secondStitches.geometry = makeStitchGeometry(0.68);
+    secondStitches.geometry = makeStitchGeometry(0.9);
     brimEdge.geometry.dispose();
     brimEdge.geometry = makeBrimEdgeGeometry();
   };
@@ -416,6 +431,8 @@ if (!THREE) {
     swatch.addEventListener('click', () => {
       fabric.color.set(swatch.dataset.color);
       brim.material.color.set(swatch.dataset.color);
+      buttonMaterial.color.set(swatch.dataset.color);
+      snapStrapMaterial.color.set(swatch.dataset.color);
       if (stitchSelect.value === 'Tone-on-tone thread') threadMaterial.color.copy(fabric.color);
       document.getElementById('color-name').textContent = swatch.dataset.name;
       swatches.forEach((item) => {
@@ -446,11 +463,17 @@ if (!THREE) {
   document.querySelectorAll('[data-view]').forEach((buttonControl) => {
     buttonControl.addEventListener('click', () => {
       const view = buttonControl.dataset.view;
-      if (view === 'front') cap.rotation.y = 0;
-      if (view === 'side') cap.rotation.y = Math.PI / 2;
+      if (view === 'front') {
+        cap.rotation.y = 0;
+        camera.position.set(0, 2.05, 4.9);
+      }
+      if (view === 'side') {
+        cap.rotation.y = Math.PI / 2;
+        camera.position.set(0, 2.05, 4.9);
+      }
       if (view === 'reset') {
         cap.rotation.set(0, 0.32, 0);
-        camera.position.set(0, 2, 4.8);
+        camera.position.set(1.25, 2.05, 4.9);
       }
       camera.lookAt(0, 0.55, 0.35);
     });

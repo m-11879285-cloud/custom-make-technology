@@ -38,12 +38,12 @@ body.customizer-page .site-header {
 }
 
 body.customizer-page .nav-links a,
-body.customizer-page .login-link {
+body.customizer-page .account-link {
   color: #d7e8ff;
 }
 
 body.customizer-page .nav-links a:hover,
-body.customizer-page .login-link:hover {
+body.customizer-page .account-link:hover {
   color: #ffffff;
 }
 
@@ -101,23 +101,54 @@ img {
   margin: 0;
 }
 
-.nav-links a,
-.login-link {
+.nav-links a {
   text-decoration: none;
   color: var(--muted);
   font-weight: 500;
   transition: color 0.2s ease;
 }
 
-.nav-links a:hover,
-.login-link:hover {
+.nav-links a:hover {
   color: var(--text);
 }
 
 .nav-actions {
   display: flex;
   align-items: center;
-  gap: 18px;
+}
+
+.account-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 5px 14px 5px 5px;
+  border: 1px solid rgba(226, 239, 255, 0.2);
+  border-radius: 999px;
+  color: #d7e8ff;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.account-link:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(226, 239, 255, 0.4);
+}
+
+.account-avatar {
+  display: inline-flex;
+  flex: 0 0 34px;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), #8b5cf6);
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
 .btn {

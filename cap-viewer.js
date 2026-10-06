@@ -128,9 +128,10 @@ if (!THREE) {
   const brimHeight = (across, depth, shape = brimShape) => {
     const sideCurve = across * across;
     const base = 0.12 + 0.025 * sideCurve;
+    const frontCurve = depth * depth;
     return shape === 'curve'
-      ? base - 0.045 * depth * depth + 0.03 * sideCurve * depth * depth
-      : base - 0.004 * depth * depth;
+      ? 0.12 + 0.1 * frontCurve - 0.16 * sideCurve * frontCurve
+      : base - 0.004 * frontCurve;
   };
   const brimVertices = [];
   const brimUvs = [];

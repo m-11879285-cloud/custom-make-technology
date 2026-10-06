@@ -502,6 +502,28 @@ img {
   font-size: 1.2rem;
 }
 
+.remove-picture {
+  justify-self: start;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid rgba(248, 113, 113, 0.45);
+  border-radius: 3px;
+  background: transparent;
+  color: #fecaca;
+  font: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.remove-picture:hover:not(:disabled) {
+  background: rgba(248, 113, 113, 0.12);
+}
+
+.remove-picture:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .view-controls {
   display: flex;
   gap: 8px;

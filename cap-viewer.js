@@ -123,9 +123,10 @@ if (!THREE) {
   let brimShape = 'curve';
   const brimEdgeFactor = (across) => Math.pow(Math.max(0, 1 - Math.pow(Math.abs(across), 4)), 1 / 4);
   const brimHeight = (across, depth, shape = brimShape) => {
-    const base = 0.12 + 0.04 * across * across;
+    const sideCurve = across * across;
+    const base = 0.12 + 0.025 * sideCurve;
     return shape === 'curve'
-      ? base - 0.16 * depth * depth + 0.12 * Math.abs(across) * depth
+      ? base - 0.045 * depth * depth + 0.03 * sideCurve * depth * depth
       : base - 0.004 * depth * depth;
   };
   const brimVertices = [];
@@ -443,7 +444,11 @@ if (!THREE) {
     });
   });
 
-  document.getElementById('picture-upload').addEventListener('change', (event) => {
+  const pictureUpload = document.getElementById('picture-upload');
+  const uploadLabel = document.getElementById('upload-label');
+  const removePictureButton = document.getElementById('remove-picture');
+
+  pictureUpload.addEventListener('change', (event) => {
     const [file] = event.target.files;
     if (!file) return;
     const imageUrl = URL.createObjectURL(file);
@@ -454,10 +459,21 @@ if (!THREE) {
       logo.material.map = texture;
       logo.material.needsUpdate = true;
       logo.visible = true;
-      document.getElementById('upload-label').textContent = file.name;
+      uploadLabel.textContent = file.name;
+      removePictureButton.disabled = false;
     }, undefined, () => {
       URL.revokeObjectURL(imageUrl);
     });
+  });
+
+  removePictureButton.addEventListener('click', () => {
+    logo.visible = false;
+    logo.material.map?.dispose();
+    logo.material.map = null;
+    logo.material.needsUpdate = true;
+    pictureUpload.value = '';
+    uploadLabel.textContent = 'Add an image';
+    removePictureButton.disabled = true;
   });
 
   document.querySelectorAll('[data-view]').forEach((buttonControl) => {

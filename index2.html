@@ -203,7 +203,7 @@
       <div class="custom-cart" aria-labelledby="custom-cart-title">
         <h2 id="custom-cart-title">Your selections</h2>
         <ul id="custom-cart-items" class="custom-cart-list" aria-live="polite"></ul>
-        <p id="cart-limit-message" class="cart-limit-message" role="status"></p>
+        <p id="cart-status-message" class="cart-status-message" role="status"></p>
       </div>
     </section>
 
@@ -218,15 +218,18 @@
       const cartShortcutCount = document.getElementById('cart-shortcut-count');
       const cartShortcutTotal = document.getElementById('cart-shortcut-total');
       const customCartItems = document.getElementById('custom-cart-items');
-      const cartLimitMessage = document.getElementById('cart-limit-message');
+      const cartStatusMessage = document.getElementById('cart-status-message');
       const currency = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
-      const maxCartItems = 2;
       const cartStorageKey = 'customcaps-cart';
       let cartItems = [];
 
       try {
         const savedItems = JSON.parse(localStorage.getItem(cartStorageKey) || '[]');
-        if (Array.isArray(savedItems)) cartItems = savedItems;
+        if (Array.isArray(savedItems)) {
+          const uniqueItems = new Map();
+          savedItems.forEach((item) => uniqueItems.set(item.title, item));
+          cartItems = [...uniqueItems.values()];
+        }
       } catch {
         localStorage.removeItem(cartStorageKey);
       }
@@ -316,12 +319,15 @@
           });
         }
 
-        const limitReached = cartItems.length >= maxCartItems;
-        cartLimitMessage.textContent = limitReached
-          ? `You can add up to ${maxCartItems} selections. Remove one to add another.`
-          : '';
         cards.forEach((card) => {
-          card.querySelector('.pick-btn').disabled = limitReached;
+          const title = card.querySelector('h3').textContent;
+          const locked = cartItems.some((item) => item.title === title);
+          const input = card.querySelector('.custom-text');
+          const submitButton = card.querySelector('.pick-btn');
+          input.disabled = locked;
+          submitButton.disabled = locked;
+          input.title = locked ? 'Remove this selection to change the choice.' : '';
+          submitButton.title = locked ? 'Remove this selection before choosing another.' : '';
         });
 
         try {
@@ -349,8 +355,6 @@
         });
 
         submitBtn.addEventListener('click', () => {
-          if (cartItems.length >= maxCartItems) return;
-
           const value = input.value.trim();
 
           if (!value) {
@@ -358,11 +362,18 @@
             return;
           }
 
+          const title = card.querySelector('h3').textContent;
+          if (cartItems.some((item) => item.title === title)) {
+            cartStatusMessage.textContent = `Remove ${title} before changing this choice.`;
+            return;
+          }
+
           cartItems.push({
-            title: card.querySelector('h3').textContent,
+            title,
             customization: value,
             price: Number(card.querySelector('.price').textContent.replace('$', ''))
           });
+          cartStatusMessage.textContent = `${title} added. Remove it to change this choice.`;
           renderCart();
           animateCapToCart(submitBtn);
         });
